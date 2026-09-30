@@ -43,7 +43,13 @@ $('#go').addEventListener('click', () => {
   msg.textContent = '执行中…';
 
   // 1) 让 background 用 DNR 挂请求头
-  chrome.runtime.sendMessage({ type: 'mhb_applyHeaders', url, headers }, () => {
+  chrome.runtime.sendMessage({ type: 'mhb_applyHeaders', url, headers }, (r) => {
+    if (!r || !r.ok) { msg.textContent = '× 挂请求头失败：' + ((r && r.err) || '扩展未响应'); return; }
+    if (r.invalid && r.invalid.length) {
+      msg.textContent = '× 请求头有 ' + r.invalid.length + ' 行无法解析，已取消执行（格式应为 Name: Value）：\n' +
+        r.invalid.map(x => '　第 ' + x.line + ' 行：' + x.text).join('\n');
+      return;
+    }
     // 2) 在被检查的页面里导航/提交 → 响应在当前页渲染；DevTools 面板不消失
     if ((method || 'GET').toUpperCase() === 'GET') {
       chrome.devtools.inspectedWindow.eval('location.href = ' + JSON.stringify(url));
