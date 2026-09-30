@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>MiniHackBar</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1f2937; --mut:#6b7280; --bd:#e5e7eb; --in:#ffffff;
+    --inbd:#d1d5db; --accent:#2563eb; --btn2:#f3f4f6; --msg:#b45309; --hdbd:#eef0f2;
+  }
+  [data-theme="dark"]{
+    --bg:#1f1f1f; --fg:#e5e5e5; --mut:#9ca3af; --bd:#333333; --in:#2a2a2a;
+    --inbd:#444444; --accent:#3b82f6; --btn2:#333333; --msg:#fbbf24; --hdbd:#333333;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font:13px/1.55 -apple-system,"Segoe UI","Microsoft YaHei",Arial,sans-serif}
+  .wrap{max-width:740px;padding:14px 16px}
+  .hd{display:flex;justify-content:space-between;align-items:center;
+      padding-bottom:10px;border-bottom:1px solid var(--hdbd)}
+  .ttl{font-weight:600;font-size:14px;letter-spacing:.3px;color:var(--accent)}
+  .hd .right{display:flex;align-items:center;gap:8px}
+  .hd .right .lab{font-size:12px;color:var(--mut)}
+  label.f{display:block;font-size:12px;color:var(--mut);margin:12px 0 4px}
+  input,select,textarea{width:100%;background:var(--in);color:var(--fg);
+      border:1px solid var(--inbd);border-radius:6px;padding:7px 9px;
+      font:13px Consolas,"Courier New",monospace;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  textarea{height:76px;resize:vertical}
+  .row{display:flex;gap:6px}
+  .row input{flex:1}
+  .btn{border:0;border-radius:6px;padding:8px 14px;font-size:13px;cursor:pointer;transition:.15s}
+  .btn2{background:var(--btn2);color:var(--fg);border:1px solid var(--bd);white-space:nowrap}
+  .btn2:hover{filter:brightness(.96)}
+  .go{width:100%;margin-top:14px;background:var(--accent);color:#fff;padding:10px;font-size:14px}
+  .go:hover{filter:brightness(1.08)}
+  .msg{margin-top:8px;font-size:12px;color:var(--msg);white-space:pre-wrap;min-height:14px}
+  .tools{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+  .tools button{background:var(--btn2);color:var(--fg);border:1px solid var(--bd);
+      border-radius:5px;padding:4px 9px;font-size:12px;cursor:pointer}
+  .tools button:hover{filter:brightness(.95)}
+  .sw{position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;flex:0 0 auto}
+  .sw input{display:none}
+  .sw .knob{position:absolute;inset:0;background:var(--inbd);border-radius:22px;transition:.2s}
+  .sw .knob::before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;
+      background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+  .sw input:checked + .knob{background:var(--accent)}
+  .sw input:checked + .knob::before{transform:translateX(18px)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hd">
+      <span class="ttl">MiniHackBar</span>
+      <span class="right">
+        <span class="lab">暗色</span>
+        <label class="sw"><input type="checkbox" id="theme"><span class="knob"></span></label>
+      </span>
+    </div>
+
+    <label class="f">URL</label>
+    <div class="row">
+      <input id="url" placeholder="https://target/path?x=1">
+      <button id="load" class="btn btn2">Load 当前URL</button>
+    </div>
+
+    <label class="f">方法</label>
+    <select id="method"><option>GET</option><option>POST</option></select>
+
+    <label class="f">请求头（每行一个：Name: Value）</label>
+    <textarea id="headers" placeholder="X-Forwarded-For: 127.0.0.1"></textarea>
+
+    <label class="f">POST Body（a=1&amp;b=2）</label>
+    <textarea id="body" placeholder="a=1&amp;b=2"></textarea>
+
+    <label class="f">编解码（先选中字段里要转的文本；不选则整段）</label>
+    <div class="tools" id="tools">
+      <button data-op="url-enc">URL 编码</button>
+      <button data-op="url-dec">URL 解码</button>
+      <button data-op="b64-enc">Base64 编码</button>
+      <button data-op="b64-dec">Base64 解码</button>
+      <button data-op="html-enc">HTML 编码</button>
+      <button data-op="html-dec">HTML 解码</button>
+      <button data-op="uni-enc">Unicode 编码</button>
+      <button data-op="uni-dec">Unicode 解码</button>
+      <button data-op="hex-enc">Hex 编码</button>
+      <button data-op="hex-dec">Hex 解码</button>
+    </div>
+
+    <button id="go" class="btn go">Execute</button>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <script src="ops.js"></script>
+  <script src="devpanel.js"></script>
+</body>
+</html>

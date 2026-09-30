@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "MiniHackBar",
+  "version": "1.3.0",
+  "description": "新版 HackBar：DevTools 面板 + 页面浮层，改 URL/请求头/Body 一键重放，响应就地渲染。",
+  "permissions": ["declarativeNetRequest", "scripting", "activeTab", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "devtools_page": "devtools.html",
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "MiniHackBar —— 点击在当前页面打开工具条" }
+}
