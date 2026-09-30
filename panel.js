@@ -134,7 +134,13 @@
     if (!/^https?:\/\//i.test(url)) { msg.textContent = '× URL 必须是完整 http/https 地址'; return; }
     msg.textContent = '执行中…';
 
-    chrome.runtime.sendMessage({ type: 'mhb_applyHeaders', url, headers }, () => {
+    chrome.runtime.sendMessage({ type: 'mhb_applyHeaders', url, headers }, (r) => {
+      if (!r || !r.ok) { msg.textContent = '× 挂请求头失败：' + ((r && r.err) || '扩展未响应'); return; }
+      if (r.invalid && r.invalid.length) {
+        msg.textContent = '× 请求头有 ' + r.invalid.length + ' 行无法解析，已取消执行（格式应为 Name: Value）：\n' +
+          r.invalid.map(x => '　第 ' + x.line + ' 行：' + x.text).join('\n');
+        return;
+      }
       if ((method || 'GET').toUpperCase() === 'GET') { location.href = url; return; }
       const f = document.createElement('form');
       f.method = 'POST'; f.action = url;
